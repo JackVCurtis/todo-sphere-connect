@@ -6,13 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Plus, Home, ListChecks } from 'lucide-react';
 import CreateListModal from './CreateListModal';
+import UserMenu from './UserMenu';
+import { useAuth } from '@/lib/auth';
 
 const Navbar = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { searchQuery, setSearchQuery } = useTodoStore();
   const location = useLocation();
+  const { user } = useAuth();
+  
   const isHome = location.pathname === '/';
   const isDashboard = location.pathname === '/dashboard';
+  const isAuth = location.pathname === '/auth';
+
+  // Don't show navbar on auth page
+  if (isAuth) return null;
 
   return (
     <header className="w-full bg-background border-b border-border sticky top-0 z-10 backdrop-blur-sm bg-background/80">
@@ -53,7 +61,7 @@ const Navbar = () => {
             </Button>
           )}
           
-          {!isDashboard && (
+          {!isDashboard && user && (
             <Button
               variant="ghost"
               size="icon"
@@ -67,7 +75,7 @@ const Navbar = () => {
             </Button>
           )}
           
-          {!isHome && (
+          {!isHome && user && (
             <Button 
               variant="default" 
               size="sm"
@@ -78,6 +86,8 @@ const Navbar = () => {
               New List
             </Button>
           )}
+          
+          <UserMenu />
         </div>
       </div>
 
